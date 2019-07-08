@@ -40,8 +40,8 @@ class ThredController extends Controller
         $thred = new Thred();
         $thred->title = $request->title;
         $thred->save();
-        $thred->responces()->create($request->get('responces'[]));
-        return response()->json('success!');
+        $thred->responces()->create($request->get('responces', []));
+        return Thred::with('responces')->get()->toJson();
     }
 
     /**

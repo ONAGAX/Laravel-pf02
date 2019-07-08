@@ -4,8 +4,10 @@ namespace App\Http\Controllers\api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Responce;
+use App\Thred;
 
-class ResponseController extends Controller
+class ResponceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +16,7 @@ class ResponseController extends Controller
      */
     public function index()
     {
-        //
+        return Responce::all();
     }
 
     /**
@@ -35,7 +37,14 @@ class ResponseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $responce = new Responce();
+        $responce->username = $request->username;
+        $responce->email = $request->email;
+        $responce->body = $request->body;
+        $responce->thred_id = $request->thred_id;
+        $responce->save();
+
+        return Thred::with('responces')->get()->toJson();
     }
 
     /**

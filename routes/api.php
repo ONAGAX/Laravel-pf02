@@ -18,3 +18,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('thred', 'api\ThredController');
+Route::apiResource('responce', 'api\ResponceController');

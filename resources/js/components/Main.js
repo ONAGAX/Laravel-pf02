@@ -23,12 +23,23 @@ class Main extends Component {
             });
     }
 
+    handleCreateThred(res) {
+        this.setState({ data: res.data });
+    }
+
     render() {
         return (
             <div>
                 {" "}
                 <h2>掲示板</h2>
-                <Thred data={this.state.data} />
+                <Thred
+                    data={this.state.data}
+                    onCreateThred={this.handleCreateThred.bind(this)}
+                />
+                <Responce
+                    data={this.state.data}
+                    onCreateThred={this.handleCreateThred.bind(this)}
+                />
             </div>
         );
     }
