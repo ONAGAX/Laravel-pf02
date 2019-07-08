@@ -1,13 +1,19 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Router } from "react-router-dom";
-import Responce from "./Responce";
+import { Col, Form, Button } from "react-bootstrap";
 import axios from "axios";
 
 class Thred extends Component {
     constructor(props) {
         super(props);
+        this.form = React.createRef();
         this.state = {
+            responces: {
+                username: "風吹けば名無し",
+                email: "",
+                body: ""
+            },
             data: [],
             title: "",
             r_username: "",
@@ -16,46 +22,48 @@ class Thred extends Component {
         };
     }
 
-    async hundleSubmit(e) {
+    async th_hundleSubmit(e) {
         e.preventDefault();
-        await this.setRes();
+        await this.setResth();
         axios
             .post("api/thred", this.state)
             .then(res => {
                 this.props.onCreateThred(res);
+                this.form.current.reset();
             })
             .catch(err => {
                 console.log(err);
             });
     }
 
-    setRes() {
+    setResth() {
+        let name;
         if (this.state.r_username === "") {
-            this.setState({ r_username: "風吹けば名無し" });
+            name = "風吹けば名無し";
+        } else {
+            name = this.state.r_username;
         }
-        let responce = {
-            username: this.state.r_username,
+        let responces = {
             email: this.state.r_email,
-            body: this.state.r_body
+            body: this.state.r_body,
+            username: name
         };
-        this.setState({ responces: responce });
+        this.setState({ responces: responces });
+        console.log(this.state.responces.username);
     }
 
     userType(type, e) {
         switch (type) {
-            case "title":
+            case "th_title":
                 this.setState({ title: e.target.value });
                 return;
-            case "name":
+            case "th_name":
                 this.setState({ r_username: e.target.value });
-                if (e.target.value === null) {
-                    this.setState({ r_username: "風吹けば名無し" });
-                }
                 return;
-            case "email":
+            case "th_email":
                 this.setState({ r_email: e.target.value });
                 return;
-            case "body":
+            case "th_body":
                 this.setState({ r_body: e.target.value });
                 return;
             default:
@@ -64,63 +72,97 @@ class Thred extends Component {
     }
 
     render() {
-        const thredHtml = this.props.data.map(ele => (
+        const thredHtml = this.props.data.map((ele, index) => (
             <li>
-                {ele.id}. {ele.title}({ele.responces.length})
+                <a href={"#" + ele.id}>
+                    <h5>
+                        {index + 1}. {ele.title} ({ele.responces.length})
+                    </h5>
+                </a>
             </li>
         ));
         return (
             <div>
                 <ul>{thredHtml}</ul>
-                <form
+                <Form
                     onSubmit={e => {
-                        this.hundleSubmit(e);
+                        this.th_hundleSubmit(e);
                     }}
+                    ref={this.form}
                 >
-                    <label htmlFor="title">タイトル-></label>
-                    <input
-                        type="text"
-                        defaultValue=""
-                        name="title"
-                        placeholder="タイトル"
-                        onChange={e => {
-                            this.userType("title", e);
-                        }}
-                    />
-                    <label htmlFor="name"> 名前-></label>
-                    <input
-                        type="text"
-                        defaultValue=""
-                        placeholder="名前"
-                        onChange={e => {
-                            this.userType("name", e);
-                        }}
-                    />
-                    <label htmlFor="email">メール-></label>
-                    <input
-                        type="email"
-                        defaultValue=""
-                        name="email"
-                        placeholder="@"
-                        onChange={e => {
-                            this.userType("email", e);
-                        }}
-                    />
-                    <br />
-                    <label htmlFor="body">本文</label>
-                    <textarea
-                        name="body"
-                        defaultValue=""
-                        onChange={e => {
-                            this.userType("body", e);
-                        }}
-                    />
-                    <input type="submit" value="送信する" />
-                </form>
+                    <Form.Row>
+                        <Form.Group
+                            as={Col}
+                            md="3"
+                            controlId="validationCustom01"
+                        >
+                            <Form.Label>タイトル</Form.Label>
+                            <Form.Control
+                                required
+                                onChange={e => {
+                                    this.userType("th_title", e);
+                                }}
+                                placeholder="タイトルを入力"
+                            />
+                        </Form.Group>
+                        <Form.Group
+                            as={Col}
+                            md="3"
+                            controlId="validationCustom02"
+                        >
+                            <Form.Label>名前</Form.Label>
+                            <Form.Control
+                                onChange={e => {
+                                    this.userType("th_name", e);
+                                }}
+                                placeholder="風吹けば名無し"
+                            />
+                        </Form.Group>
+                        <Form.Group
+                            as={Col}
+                            md="3"
+                            controlId="validationCustom02"
+                        >
+                            <Form.Label>メール</Form.Label>
+                            <Form.Control
+                                type="email"
+                                onChange={e => {
+                                    this.userType("th_email", e);
+                                }}
+                                placeholder="email@gmail.com"
+                            />
+                        </Form.Group>
+                    </Form.Row>
+                    <Form.Row>
+                        <Form.Group
+                            as={Col}
+                            md="6"
+                            controlId="validationCustom02"
+                        >
+                            <Form.Label>本文</Form.Label>
+                            <Form.Control
+                                require
+                                as="textarea"
+                                row="9"
+                                onChange={e => {
+                                    this.userType("th_body", e);
+                                }}
+                                placeholder=""
+                            />
+                        </Form.Group>
+                    </Form.Row>
+                    <Button variant="success" type="submit">
+                        スレッドを作成する
+                    </Button>
+                </Form>
                 <br />
-                {/* <Responce /> */}
             </div>
         );
+        const styles = {
+            style: {
+                marginTop: "20px"
+            }
+        };
     }
 }
 

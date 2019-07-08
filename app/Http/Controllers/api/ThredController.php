@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Thred;
 use App\Responce;
+use App\Http\Requests\StoreThredRequest;
 
 class ThredController extends Controller
 {
@@ -35,7 +36,7 @@ class ThredController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreThredRequest $request)
     {
         $thred = new Thred();
         $thred->title = $request->title;

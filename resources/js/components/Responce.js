@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Router } from "react-router-dom";
+import { Form, Col, Button } from "react-bootstrap";
 import axios from "axios";
 
 class Responce extends Component {
     constructor(props) {
         super(props);
-
+        this.form = React.createRef();
         this.state = {
+            validated: false,
             username: "",
             email: "",
             body: "",
@@ -21,6 +23,7 @@ class Responce extends Component {
         axios
             .post("api/responce", this.state)
             .then(res => {
+                this.form.current.reset();
                 this.props.onCreateThred(res);
             })
             .catch(err => {
@@ -63,11 +66,12 @@ class Responce extends Component {
             <div>
                 {data.map(ele => (
                     <div id={ele.id}>
-                        <h4>{ele.title}</h4>
-                        {ele.responces.map(res => (
+                        <hr />
+                        <h4 id={"#" + ele.id}>{ele.title}</h4>
+                        {ele.responces.map((res, index) => (
                             <div id={res.id}>
                                 <p>
-                                    {res.id}{" "}
+                                    {index + 1}{" "}
                                     {res.email ? (
                                         <a href={res.email}>{res.username}</a>
                                     ) : (
@@ -78,45 +82,69 @@ class Responce extends Component {
                                 <p>{res.body}</p>
                             </div>
                         ))}
-                        <form
+                        <a href="#">
+                            <span>▲ トップに戻る</span>
+                        </a>
+                        <Form
                             onSubmit={e => {
                                 this.hundleSubmitRes(e);
                             }}
+                            ref={this.form}
                         >
-                            <label htmlFor="name"> 名前-></label>
-                            <input
-                                type="text"
-                                placeholder="風吹けば名無し"
-                                onChange={e => {
-                                    this.userType("name", e);
-                                }}
-                            />
-                            <label htmlFor="email">メール-></label>
-                            <input
-                                type="email"
-                                defaultValue=""
-                                name="email"
-                                onChange={e => {
-                                    this.userType("email", e);
-                                }}
-                            />
-                            <br />
-                            <label htmlFor="body">本文</label>
-                            <textarea
-                                name="body"
-                                defaultValue=""
-                                onChange={e => {
-                                    this.userType("body", e);
-                                }}
-                            />
-                            <input
+                            <Form.Row>
+                                <Form.Group
+                                    as={Col}
+                                    md="3"
+                                    controlId="validationCustom02"
+                                >
+                                    <Form.Control
+                                        onChange={e => {
+                                            this.userType("name", e);
+                                        }}
+                                        placeholder="風吹けば名無し"
+                                    />
+                                </Form.Group>
+                                <Form.Group
+                                    as={Col}
+                                    md="3"
+                                    controlId="validationCustom02"
+                                >
+                                    <Form.Control
+                                        type="email"
+                                        onChange={e => {
+                                            this.userType("email", e);
+                                        }}
+                                        placeholder="email@gmail.com"
+                                    />
+                                </Form.Group>
+                            </Form.Row>
+                            <Form.Row>
+                                <Form.Group
+                                    as={Col}
+                                    md="6"
+                                    controlId="validationCustom02"
+                                >
+                                    <Form.Control
+                                        required
+                                        as="textarea"
+                                        row="9"
+                                        onChange={e => {
+                                            this.userType("body", e);
+                                        }}
+                                        placeholder="本文"
+                                    />
+                                </Form.Group>
+                            </Form.Row>
+                            <Button
+                                variant="primary"
                                 type="submit"
-                                value="送信する"
                                 onClick={e => {
                                     this.setRes(ele.id);
                                 }}
-                            />
-                        </form>
+                            >
+                                カキコ
+                            </Button>
+                        </Form>
                     </div>
                 ))}
             </div>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Responce;
 use App\Thred;
+use App\Http\Requests\StoreResponceRequest;
 
 class ResponceController extends Controller
 {
@@ -35,7 +36,7 @@ class ResponceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreResponceRequest $request)
     {
         $responce = new Responce();
         $responce->username = $request->username;
